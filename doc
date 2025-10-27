@@ -1,0 +1,230 @@
+FROM mysql:latest
+
+ENV MYSQL_ROOT_PASSWORD=root
+
+COPY samp.sql /docker-entrypoint-initdb.d
+
+
+create database student_db;
+use student_db;
+create table student_db(student_id int not null auto_increment primary key,
+firstname varchar(20),
+lastname varchar(20));
+insert into student_db(firstname,lastname)
+values("prashanth","kumar"),("harsha","lokanath");
+
+
+
+FROM python:latest
+
+WORKDIR /app
+
+COPY readsql.py .
+
+RUN pip install mysql-connector-python
+
+CMD ["python", "readsql.py"]
+
+
+import mysql.connector
+import time
+
+
+time.sleep(10)
+
+conn = mysql.connector.connect(
+    host='mysql-student',
+    user='root',
+    password='root',
+    database='student_db'
+)
+
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM student_db;")
+rows = cursor.fetchall()
+
+for row in rows:
+    print(f"ID: {row[0]}, Firstname: {row[1]}, Lastname: {row[2]}")
+
+cursor.close()
+conn.close()
+
+
+
+
+read file
+FROM python:latest
+
+WORKDIR /app
+
+COPY data.txt .
+COPY read.py .
+
+CMD ["python", "read.py"]
+
+with open('data.txt', 'r') as file:
+    content = file.read()
+    print(content)
+    
+data.txt
+
+
+
+
+
+
+
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY hello.py /app/
+
+CMD ["python", "hello.py"]
+
+print("Hello From Docker")
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My first webpage</title>
+</head>
+
+<body>
+    <h1>I love coffee</h1>
+    <p>Say good morning with hot coffee</p>
+    <p>I am saying this again</>
+    <p>Last time</>
+</body>
+
+
+<img src="coffeee.jpg" width=500 />
+
+</html>
+
+
+FROM nginx
+
+WORKDIR /usr/share/nginx/html/
+
+COPY index.html .
+COPY coffeee.jpg .
+
+EXPOSE 80
+
+
+
+
+
+# Use a specific OpenJDK version
+FROM openjdk:21-jdk-slim
+
+# Set the working directory inside the container
+WORKDIR /javaapp
+
+# Copy the Java source file into the container
+COPY helloworld.java .
+
+# Compile the Java program
+RUN javac helloworld.java
+
+# Set the default command to run the Java program
+CMD ["java", "helloworld"]
+
+
+
+
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
+public class helloworld {
+    public static void main(String[] args) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8001), 0);
+
+        server.createContext("/", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                exchange.getResponseHeaders().set("Content-Type", "text/html");
+                exchange.sendResponseHeaders(200, 0);
+
+                OutputStream responseBody = exchange.getResponseBody();
+                String htmlResponse = "<html><body><h1>Hello, World!</h1></body></html>";
+                responseBody.write(htmlResponse.getBytes());
+                responseBody.close();
+            }
+        });
+
+        server.start();
+        System.out.println("Server is listening on port 8001...");
+    }
+}
+
+
+
+
+
+
+curl
+FROM alpine:latest
+
+RUN apk add --no-cache curl
+
+CMD ["curl", "google.com"]
+
+
+
+
+
+version: '3'
+services:
+  webserver:
+    container_name: nodejs-webserver
+    build: ./webserver
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis-server
+  redis-server:
+    image: redis
+    ports:
+      - 6379:6379
+  mongodb:
+    image: mongo:latest
+    container_name: mongodatabase
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongodb-data:
+
+
+webserver
+FROM mhart/alpine-node:14
+
+WORKDIR /app
+
+#COPY package*.json /app/
+COPY package*.json ./
+RUN npm install
+
+#COPY . /app/
+COPY . .
+
+RUN npm run build
+
+CMD ["npm", "run", "start"]
