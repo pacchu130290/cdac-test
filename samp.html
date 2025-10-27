@@ -1,0 +1,83 @@
+kubectl get nodes
+kubectl get pods
+Kubectl run <name> –image=<name> –restart=Never
+Kubectl run <name> –image=<name> –restart=Never –port=80 –expose
+kubectl create deployment <name> --image=alpine
+kubectl create deployment prashanth-test --image=alpine –replicas= <no>
+kubectl delete deployment <name>
+kubectl create pod <name>
+kubectl edit deployment prashanth-test 
+Kubectl apply -f <yaml file>
+kubectl exec -it <pod name> -c <container name> -- /bin/sh
+kubectl exec -it <pod name> -c <container name> -- <cmd>
+kubectl get pods --show-labels
+kubectl label pod <name> app=v2 --overwrite
+kubectl get svc
+kubectl get ep
+kubectl run busybox --rm --image=busybox -it --restart=Never – wget -O- [cluster IP]:80
+
+
+Docker ps
+Docker ps -a
+Docker images 
+Docker container lists
+Docker run –name <name> image 
+Docker run -it <name> /bash/sh or bash
+Docker run -dit <name> -p 8080:80 nginx
+Docker rm
+Docker login
+Docker push <imahe name> <image version>
+Docker rmi
+Docker start / stop / restart
+Docker exec 
+Docker build -t <name> . 
+Docker service create –replicas=3 web-servers
+Docker run -d –name <name> -v volname:/data
+ docker run -it -v my_volume:/dconfig debian:latest
+docker tag alpine-git labs-git:v1.0
+Docker volume ls
+Docker volume create volname
+Docker volume inspect
+
+
+Jenkins
+
+javac HelloWorld.java
+java HelloWorld
+Python3 hello.py
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], browser: github('https://github.com/pacchu130290/cdac-test'), extensions: [], userRemoteConfigs: [[url: 'https://github.com/pacchu130290/cdac-test.git']])
+            }
+        }
+        stage('Build') {
+            steps {
+                git 'https://github.com/pacchu130290/cdac-test.git'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh '''echo "Executing Python"
+                python3 hello.py'''
+            }
+        }
+    }
+}
+
+
+
+
+
+Git init
+Git status
+
+
+Db
+
